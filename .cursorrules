@@ -1,0 +1,267 @@
+# Be-Logistics Backend - Coding Convention
+
+## Project Overview
+- **Framework:** Spring Boot 3.5.14, Java 17
+- **Database:** MySQL with JPA/Hibernate
+- **Mapper:** MapStruct 1.6.3
+- **API Docs:** SpringDoc OpenAPI (Swagger) 2.5.0
+- **Build:** Maven
+
+---
+
+## 1. Project Structure
+
+```
+src/main/java/cms/hub/belogistics/
+├── common/                    # Shared utilities & base classes
+│   ├── enums/                 # Enum types (Role, Type, etc.)
+│   ├── exception/             # Global exception handler
+│   ├── until/                 # Config classes (Jackson, etc.)
+│   ├── ApiResponse.java       # Unified API response wrapper
+│   └── BaseEntity.java        # Base entity with createdAt/updatedAt
+├── controller/                # REST controllers
+├── dto/
+│   ├── request/               # Request DTOs (XxxRequest.java)
+│   └── response/              # Response DTOs (XxxResponse.java)
+├── entity/                    # JPA entities
+├── mapper/                    # MapStruct mappers
+├── repository/                # Spring Data JPA repositories
+└── service/
+    ├── impl/                  # Service implementations
+    └── XxxService.java        # Service interfaces
+```
+
+---
+
+## 2. Naming Conventions
+
+### Files
+| Layer | Pattern | Example |
+|-------|---------|---------|
+| Entity | `{Name}.java` | `Pages.java`, `PageSections.java` |
+| Request DTO | `{Name}Request.java` | `PagesRequest.java` |
+| Response DTO | `{Name}Response.java` | `PagesResponse.java` |
+| Mapper | `{Name}Mapper.java` | `PagesMapper.java` |
+| Repository | `{Name}Repository.java` | `PagesRepository.java` |
+| Service Interface | `{Name}Service.java` | `PageService.java` |
+| Service Impl | `{Name}ServiceImpl.java` | `PageServiceImpl.java` |
+| Controller | `{Name}Controller.java` | `PagesController.java` |
+
+### Variables & Methods
+- Use **camelCase** for variables, methods, parameters
+- Use **PascalCase** for class names
+- Entity fields map to snake_case DB columns via `@Column(name = "...")`
+- Boolean fields: use `active`, `enabled` (not `isActive`, `isEnabled`)
+
+---
+
+## 3. Layer Patterns
+
+### Entity
+```java
+@Entity
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "table_name")
+public class EntityName extends BaseEntity implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    
+    // fields with @Column(name = "snake_case")
+    // JSON fields: @JdbcTypeCode(SqlTypes.JSON)
+    // Relations: @ManyToOne, @OneToMany, etc.
+}
+```
+
+### Request DTO
+```java
+@Data
+public class EntityNameRequest implements Serializable {
+    private String fieldName;
+    // No validation annotations unless explicitly needed
+}
+```
+
+### Response DTO
+```java
+@Data
+public class EntityNameResponse implements Serializable {
+    private Long id;
+    private String fieldName;
+    private Instant createdAt;
+    private Instant updatedAt;
+}
+```
+
+### Mapper (MapStruct)
+```java
+@Mapper(componentModel = "spring")
+public interface EntityNameMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "relationField", ignore = true)
+    EntityName toEntity(EntityNameRequest request);
+    
+    @Mapping(source = "relation.id", target = "relationId")
+    EntityNameResponse toResponse(EntityName entity);
+}
+```
+
+### Repository
+```java
+public interface EntityNameRepository extends JpaRepository<EntityName, Long> {
+}
+```
+
+### Service Interface
+```java
+public interface EntityNameService {
+    EntityNameResponse create(EntityNameRequest request);
+}
+```
+
+### Service Implementation
+```java
+@Service
+@RequiredArgsConstructor
+public class EntityNameServiceImpl implements EntityNameService {
+    private final EntityNameRepository repository;
+    private final EntityNameMapper mapper;
+    
+    @Override
+    public EntityNameResponse create(EntityNameRequest request) {
+        // 1. Convert request to entity
+        // 2. Handle relations (findById, setRelation)
+        // 3. Save entity
+        // 4. Return response via mapper
+    }
+}
+```
+
+### Controller
+```java
+@RestController
+@RequestMapping("/api/v1/entities")
+@RequiredArgsConstructor
+public class EntityNameController {
+    private final EntityNameService service;
+    
+    @PostMapping
+    public ResponseEntity<ApiResponse<EntityNameResponse>> create(
+            @Valid @RequestBody EntityNameRequest request) {
+        EntityNameResponse response = service.create(request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+}
+```
+
+---
+
+## 4. API Response Format
+
+Always use `ApiResponse<T>` wrapper:
+
+```java
+// Success with data
+ApiResponse.success(data)           // message = "SUCCESS"
+ApiResponse.success("msg", data)    // custom message
+
+// Error
+ApiResponse.fail("error message")
+```
+
+Response structure:
+```json
+{
+    "success": true,
+    "message": "SUCCESS",
+    "data": { ... }
+}
+```
+
+---
+
+## 5. API URL Convention
+
+- Base path: `/api/v1/{resource-name}` (kebab-case)
+- Examples:
+  - `/api/v1/pages`
+  - `/api/v1/page-sections`
+  - `/api/v1/users`
+
+---
+
+## 6. Exception Handling
+
+- Use `GlobalExceptionHandler` for centralized error handling
+- Throw `RuntimeException` with descriptive message
+- Handler returns `ApiResponse` with `success: false`
+
+```java
+throw new RuntimeException("Resource not found with id: " + id);
+```
+
+---
+
+## 7. Import Order
+
+1. `cms.hub.belogistics.*` (project packages)
+2. `jakarta.*` (Jakarta EE)
+3. `java.*` (Java standard library)
+4. `org.springframework.*` (Spring)
+5. `org.mapstruct.*` (MapStruct)
+6. `lombok.*` (Lombok)
+7. Other dependencies
+
+---
+
+## 8. Lombok Usage
+
+- Entity: `@Setter`, `@Getter`, `@AllArgsConstructor`, `@NoArgsConstructor`
+- DTO: `@Data`
+- Service/Controller: `@RequiredArgsConstructor` (for constructor injection)
+- Response wrapper: `@Getter`, `@Setter`, `@NoArgsConstructor`, `@AllArgsConstructor`, `@Builder`
+
+---
+
+## 9. JSON Fields
+
+For `List<String>` or complex types stored as JSON in DB:
+```java
+@Column(name = "field_name", columnDefinition = "text")
+@JdbcTypeCode(SqlTypes.JSON)
+private List<String> fieldName;
+```
+
+---
+
+## 10. Creating New Feature Checklist
+
+When adding a new CRUD feature, create these files in order:
+
+1. ✅ `entity/EntityName.java` - JPA entity
+2. ✅ `dto/request/EntityNameRequest.java` - Request DTO
+3. ✅ `dto/response/EntityNameResponse.java` - Response DTO
+4. ✅ `mapper/EntityNameMapper.java` - MapStruct mapper
+5. ✅ `repository/EntityNameRepository.java` - JPA repository
+6. ✅ `service/EntityNameService.java` - Service interface
+7. ✅ `service/impl/EntityNameServiceImpl.java` - Service implementation
+8. ✅ `controller/EntityNameController.java` - REST controller
+
+---
+
+## 11. Tech Stack Reference
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Spring Boot 3.5.14 |
+| Java | 17 |
+| Database | MySQL |
+| ORM | Spring Data JPA / Hibernate |
+| Mapper | MapStruct 1.6.3 |
+| API Docs | SpringDoc OpenAPI 2.5.0 |
+| Validation | Spring Boot Starter Validation |
+| Build | Maven |
