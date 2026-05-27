@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PageSectionsRepository extends JpaRepository<PageSections, Long> {
-    List<PageSections> findByPagesId(Long pageId);
+    List<PageSections> findByPagesIdOrderBySortIndexAsc(Long pageId);
 }

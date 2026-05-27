@@ -38,7 +38,7 @@ public class PageServiceImpl implements PageService {
     }
 
     private PageWithSectionsResponse mapPageWithSections(Pages page) {
-        List<PageSections> sections = pageSectionsRepository.findByPagesId(page.getId());
+        List<PageSections> sections = pageSectionsRepository.findByPagesIdOrderBySortIndexAsc(page.getId());
         PageWithSectionsResponse response = mapper.toWithSectionsResponse(page);
         response.setSections(mapper.toSectionResponseList(sections));
         return response;
