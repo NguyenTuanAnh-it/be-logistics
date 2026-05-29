@@ -8,8 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.util.List;
@@ -35,6 +33,9 @@ public class Pages extends BaseEntity implements Serializable {
 
     @Column(name = "short_description")
     private String shortDescription;
+
+    @Column(name = "image")
+    private String image;
 
     @Convert(converter = cms.hub.belogistics.common.converter.StringListConverter.class)
     @Column(name = "description", columnDefinition = "text")

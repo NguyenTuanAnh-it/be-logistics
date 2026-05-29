@@ -30,4 +30,6 @@ public interface PagesMapper {
     PageSectionsResponse toSectionResponse(PageSections section);
 
     List<PageSectionsResponse> toSectionResponseList(List<PageSections> sections);
+
+    List<PagesResponse> toResponseList(List<Pages> pages);
 }

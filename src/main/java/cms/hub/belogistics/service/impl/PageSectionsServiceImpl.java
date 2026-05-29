@@ -11,6 +11,9 @@ import cms.hub.belogistics.service.PageSectionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class PageSectionsServiceImpl implements PageSectionsService {
@@ -31,5 +34,13 @@ public class PageSectionsServiceImpl implements PageSectionsService {
 
         PageSections saved = pageSectionsRepository.save(pageSections);
         return mapper.toResponse(saved);
+    }
+
+    @Override
+    public List<PageSectionsResponse> getByPageId(Long pageId) {
+        List<PageSections> sections = pageSectionsRepository.findByPagesIdOrderBySortIndexAsc(pageId);
+        return sections.stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

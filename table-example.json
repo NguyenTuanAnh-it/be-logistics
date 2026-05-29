@@ -1,0 +1,65 @@
+{
+  "pageId": 1,
+  "title": "Bảng giá vận chuyển theo lô hàng",
+  "description": [
+    {
+      "type": "text",
+      "text": "BẢNG GIÁ DỊCH VỤ THEO QUY MÔ LÔ HÀNG"
+    },
+    {
+      "type": "table",
+      "headers": ["Quy mô lô hàng", "Tính theo khối (VNĐ/khối)", "Tính theo cân nặng (VNĐ/kg)", "Số mục hỗ trợ khai báo"],
+      "cellRows": [
+        [
+          {"text": "Từ 1 khối /150kg – 10 khối", "colspan": 1, "rowspan": 1},
+          {"text": "900.000", "colspan": 1, "rowspan": 1},
+          {"text": "4.000", "colspan": 1, "rowspan": 1},
+          {"text": "3 mục", "colspan": 1, "rowspan": 1}
+        ],
+        [
+          {"text": "Từ 10- 50 khối", "colspan": 1, "rowspan": 1},
+          {"text": "850.000", "colspan": 1, "rowspan": 1},
+          {"text": "3.500", "colspan": 1, "rowspan": 1},
+          {"text": "5 mục", "colspan": 1, "rowspan": 1}
+        ],
+        [
+          {"text": "Từ 50 – 90 khối", "colspan": 1, "rowspan": 1},
+          {"text": "800.000", "colspan": 1, "rowspan": 1},
+          {"text": "3.200", "colspan": 1, "rowspan": 1},
+          {"text": "25 mục", "colspan": 1, "rowspan": 1}
+        ],
+        [
+          {"text": "Hàng tải trọng từ 300kg-500kg/ khối", "colspan": 1, "rowspan": 1},
+          {"text": "", "colspan": 1, "rowspan": 1},
+          {"text": "3.000", "colspan": 1, "rowspan": 1},
+          {"text": "Lô <1000kg hỗ trợ khai 5 mục", "colspan": 1, "rowspan": 1}
+        ],
+        [
+          {"text": "Hàng tải trọng từ 500-1000kg/ khối", "colspan": 1, "rowspan": 1},
+          {"text": "", "colspan": 1, "rowspan": 1},
+          {"text": "2.500", "colspan": 1, "rowspan": 1},
+          {"text": "Lô >1000kg hỗ trợ khai 10 mục", "colspan": 1, "rowspan": 1}
+        ],
+        [
+          {"text": "Hàng tải trọng từ 1000kg/ khối trở lên", "colspan": 1, "rowspan": 1},
+          {"text": "", "colspan": 1, "rowspan": 1},
+          {"text": "2.000", "colspan": 1, "rowspan": 1},
+          {"text": "", "colspan": 1, "rowspan": 1}
+        ],
+        [
+          {"text": "Lô nhỏ: 50-150 Kg", "colspan": 1, "rowspan": 1},
+          {"text": "", "colspan": 1, "rowspan": 1},
+          {"text": "10.000", "colspan": 1, "rowspan": 1},
+          {"text": "1 mục", "colspan": 1, "rowspan": 1}
+        ]
+      ]
+    },
+    {
+      "type": "warning",
+      "icon": "⚠️",
+      "text": "Lưu ý: Giá trên có thể thay đổi theo thời điểm. Liên hệ hotline để được tư vấn chi tiết."
+    }
+  ],
+  "sortIndex": 1,
+  "active": true
+}

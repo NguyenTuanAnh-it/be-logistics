@@ -19,6 +19,8 @@ public class PageWithSectionsResponse implements Serializable {
 
     private String shortDescription;
 
+    private String image;
+
     private List<String> description;
 
     private String content;
@@ -32,6 +34,8 @@ public class PageWithSectionsResponse implements Serializable {
     private Type type;
 
     private Long parentId;
+
+    private List<PagesResponse> children;
 
     private List<PageSectionsResponse> sections;
 

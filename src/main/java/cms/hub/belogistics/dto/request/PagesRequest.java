@@ -16,6 +16,8 @@ public class PagesRequest implements Serializable {
 
     private String shortDescription;
 
+    private String image;
+
     private List<String> description;
 
     private String content;

@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class OtherOption implements Serializable {
     private String icon;
+    private String image;
     private String type;
     private String value;
 }
