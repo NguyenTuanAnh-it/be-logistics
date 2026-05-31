@@ -18,6 +18,8 @@ public class PageSectionsRequest implements Serializable {
 
     private List<String> images;
 
+    private String icon;
+
     private Integer sortIndex;
 
     private Boolean active;

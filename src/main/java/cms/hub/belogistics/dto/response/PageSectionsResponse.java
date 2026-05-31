@@ -23,6 +23,8 @@ public class PageSectionsResponse implements Serializable {
 
     private List<String> images;
 
+    private String icon;
+
     private Integer sortIndex;
 
     private Boolean active;
