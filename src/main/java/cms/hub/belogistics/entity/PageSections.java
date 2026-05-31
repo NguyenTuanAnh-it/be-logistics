@@ -41,9 +41,6 @@ public class PageSections extends BaseEntity implements Serializable {
     @JdbcTypeCode(SqlTypes.JSON)
     private List<String> images;
 
-    @Column(name = "icon")
-    private String icon;
-
     @Column(name = "sort_index")
     private Integer sortIndex;
 
