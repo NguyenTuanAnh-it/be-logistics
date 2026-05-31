@@ -13,8 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DescriptionItem implements Serializable {
-    private String type; // "text", "table", "warning", "note"
+    private String type; // "text", "table", "warning", "note", "image"
     private String icon;
+    private String img; // đường dẫn ảnh
     private String text;
     private List<String> boldParts; // các phần text cần in đậm (áp dụng cho type="text")
     private List<String> headers; // header cột

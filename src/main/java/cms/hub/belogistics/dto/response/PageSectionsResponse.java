@@ -1,7 +1,6 @@
 package cms.hub.belogistics.dto.response;
 
 import cms.hub.belogistics.dto.DescriptionItem;
-import cms.hub.belogistics.dto.TitleItem;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ public class PageSectionsResponse implements Serializable {
 
     private String pageTitle;
 
-    private List<TitleItem> title;
+    private String title;
 
     private List<DescriptionItem> description;
 
