@@ -1,0 +1,18 @@
+package cms.hub.belogistics.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class TitleItem implements Serializable {
+    private String type; // "text", "icon", "heading"
+    private String icon;
+    private String text;
+}

@@ -2,6 +2,7 @@ package cms.hub.belogistics.entity;
 
 import cms.hub.belogistics.common.BaseEntity;
 import cms.hub.belogistics.dto.DescriptionItem;
+import cms.hub.belogistics.dto.TitleItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,8 +29,9 @@ public class PageSections extends BaseEntity implements Serializable {
     @JoinColumn(name = "page_id")
     private Pages pages;
 
-    @Column(name = "title")
-    private String title;
+    @Column(name = "title", columnDefinition = "json")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<TitleItem> title;
 
     @Column(name = "description", columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
