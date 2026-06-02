@@ -1,5 +1,7 @@
 package cms.hub.belogistics.service.impl;
 
+import cms.hub.belogistics.common.enums.Type;
+import cms.hub.belogistics.dto.request.PageSectionsRequest;
 import cms.hub.belogistics.dto.request.PagesRequest;
 import cms.hub.belogistics.dto.response.PageWithSectionsResponse;
 import cms.hub.belogistics.dto.response.PagesResponse;
@@ -13,6 +15,7 @@ import cms.hub.belogistics.service.PageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,9 +28,75 @@ public class PageServiceImpl implements PageService {
     private final PagesMapper mapper;
 
     @Override
+    @Transactional
     public PagesResponse create(PagesRequest request) {
         Pages pages = pagesRepository.save(mapper.toEntity(request));
+
+        // Tạo sections nếu có
+        if (request.getSections() != null && !request.getSections().isEmpty()) {
+            for (PageSectionsRequest sectionReq : request.getSections()) {
+                PageSections section = new PageSections();
+                section.setPages(pages);
+                section.setTitle(sectionReq.getTitle());
+                section.setDescription(sectionReq.getDescription());
+                section.setImages(sectionReq.getImages());
+                section.setSortIndex(sectionReq.getSortIndex());
+                section.setActive(sectionReq.getActive() != null ? sectionReq.getActive() : true);
+                pageSectionsRepository.save(section);
+            }
+        }
+
         return mapper.toResponse(pages);
+    }
+
+    @Override
+    @Transactional
+    public PagesResponse update(Long id, PagesRequest request) {
+        Pages existing = pagesRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Page not found with id: " + id));
+
+        existing.setName(request.getName());
+        existing.setUrl(request.getUrl());
+        existing.setShortDescription(request.getShortDescription());
+        existing.setImage(request.getImage());
+        existing.setDescription(request.getDescription());
+        existing.setContent(request.getContent());
+        existing.setOtherOptions(request.getOtherOptions());
+        existing.setSortIndex(request.getSortIndex());
+        existing.setType(request.getType());
+
+        Pages saved = pagesRepository.save(existing);
+
+        // Đồng bộ sections: xóa cũ + tạo mới
+        if (request.getSections() != null) {
+            List<PageSections> oldSections = pageSectionsRepository.findByPagesIdOrderBySortIndexAsc(id);
+            pageSectionsRepository.deleteAll(oldSections);
+
+            for (PageSectionsRequest sectionReq : request.getSections()) {
+                PageSections section = new PageSections();
+                section.setPages(saved);
+                section.setTitle(sectionReq.getTitle());
+                section.setDescription(sectionReq.getDescription());
+                section.setImages(sectionReq.getImages());
+                section.setSortIndex(sectionReq.getSortIndex());
+                section.setActive(sectionReq.getActive() != null ? sectionReq.getActive() : true);
+                pageSectionsRepository.save(section);
+            }
+        }
+
+        return mapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        if (!pagesRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Page not found with id: " + id);
+        }
+        // Xóa tất cả sections trước
+        List<PageSections> sections = pageSectionsRepository.findByPagesIdOrderBySortIndexAsc(id);
+        pageSectionsRepository.deleteAll(sections);
+        pagesRepository.deleteById(id);
     }
 
     @Override
@@ -59,5 +128,15 @@ public class PageServiceImpl implements PageService {
         return mapPageWithSections(page);
     }
 
+    @Override
+    public List<PagesResponse> findAll() {
+        List<Pages> pages = pagesRepository.findAll();
+        return mapper.toResponseList(pages);
+    }
 
+    @Override
+    public List<PagesResponse> findByType(Type type) {
+        List<Pages> pages = pagesRepository.findByType(type);
+        return mapper.toResponseList(pages);
+    }
 }
