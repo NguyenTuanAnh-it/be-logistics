@@ -24,6 +24,18 @@ public class PageSectionsController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<PageSectionsResponse>> update(@PathVariable Long id, @Valid @RequestBody PageSectionsRequest request) {
+        PageSectionsResponse response = pageSectionsService.update(id, request);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        pageSectionsService.delete(id);
+        return ResponseEntity.ok(ApiResponse.success("Deleted successfully", null));
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<PageSectionsResponse>>> getByPageId(@RequestParam Long pageId) {
         List<PageSectionsResponse> response = pageSectionsService.getByPageId(pageId);

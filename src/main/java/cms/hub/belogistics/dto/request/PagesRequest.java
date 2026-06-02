@@ -27,4 +27,6 @@ public class PagesRequest implements Serializable {
     private Integer sortIndex;
 
     private Type type;
+
+    private List<PageSectionsRequest> sections;
 }
