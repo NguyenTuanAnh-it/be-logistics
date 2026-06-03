@@ -3,6 +3,12 @@ spring:
     url: jdbc:mysql://localhost:3309/logistics_cms
     username: logistics_user
     password: logistics123
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 10
+      minimum-idle: 5
   jpa:
     hibernate:
       ddl-auto: none

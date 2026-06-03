@@ -3,6 +3,12 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      maximum-pool-size: 20
+      minimum-idle: 5
   jpa:
     hibernate:
       ddl-auto: none
@@ -16,7 +22,6 @@ spring:
       max-request-size: 50MB
 
 # File Storage Configuration - PRODUCTION
-# Có thể dùng S3, Cloudinary, hoặc server storage
 file:
   storage:
     upload-dir: ${FILE_UPLOAD_DIR:/var/www/uploads}
