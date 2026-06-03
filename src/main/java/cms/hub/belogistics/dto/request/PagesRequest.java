@@ -28,5 +28,7 @@ public class PagesRequest implements Serializable {
 
     private Type type;
 
+    private Long parentId;
+
     private List<PageSectionsRequest> sections;
 }

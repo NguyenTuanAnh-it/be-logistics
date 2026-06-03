@@ -30,7 +30,16 @@ public class PageServiceImpl implements PageService {
     @Override
     @Transactional
     public PagesResponse create(PagesRequest request) {
-        Pages pages = pagesRepository.save(mapper.toEntity(request));
+        Pages pages = mapper.toEntity(request);
+
+        // Set parent nếu có parentId
+        if (request.getParentId() != null) {
+            Pages parent = pagesRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent page not found with id: " + request.getParentId()));
+            pages.setParent(parent);
+        }
+
+        pages = pagesRepository.save(pages);
 
         // Tạo sections nếu có
         if (request.getSections() != null && !request.getSections().isEmpty()) {
@@ -64,6 +73,15 @@ public class PageServiceImpl implements PageService {
         existing.setOtherOptions(request.getOtherOptions());
         existing.setSortIndex(request.getSortIndex());
         existing.setType(request.getType());
+
+        // Set parent nếu có parentId
+        if (request.getParentId() != null) {
+            Pages parent = pagesRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent page not found with id: " + request.getParentId()));
+            existing.setParent(parent);
+        } else {
+            existing.setParent(null);
+        }
 
         Pages saved = pagesRepository.save(existing);
 
